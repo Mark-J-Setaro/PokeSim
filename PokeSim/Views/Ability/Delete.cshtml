@@ -1,0 +1,54 @@
+﻿@model PokeSim.Models.Ability
+
+@{
+    string displayItem = "Ability";
+    ViewBag.Title = "Delete " + displayItem;
+    string message = ViewBag.Message;
+    PokeSim.Models.Ability currentItem = ViewBag.CurrentItem;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<h3>Are you sure you want to delete this @displayItem?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @currentItem.Id
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @currentItem.Name
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @currentItem.Description
+        </dd>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <dt></dt>
+            <dd class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" />
+            </dd>
+        }
+    </dl>
+</div>
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

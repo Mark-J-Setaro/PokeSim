@@ -1,0 +1,82 @@
+﻿@model PokeSim.Models.ElementalTypeDamageMultiplier
+
+@{
+    string displayItem = "Elemental Comparison";
+    ViewBag.Title = "Details for " + displayItem;
+    PokeSim.Models.ElementalTypeDamageMultiplier currentItem = ViewBag.CurrentItem;
+    string message = ViewBag.Message;
+    string attTypeStr = ViewBag.AttTypeStr;
+    string defTypeStr = ViewBag.DefTypeStr;
+    bool isAdmin = ViewBag.IsAdmin;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @currentItem.Id
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ElementalTypeId_Attack)
+        </dt>
+
+        <dd>
+            @if (!String.IsNullOrWhiteSpace(attTypeStr))
+            {
+                <a href="@Url.Action("Details", "ElementalType", new { id = currentItem.ElementalTypeId_Attack })">@attTypeStr</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.ElementalTypeId_Attack)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ElementalTypeId_Defend)
+        </dt>
+
+        <dd>
+            @if (!String.IsNullOrWhiteSpace(defTypeStr))
+            {
+                <a href="@Url.Action("Details", "ElementalType", new { id = currentItem.ElementalTypeId_Defend })">@defTypeStr</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.ElementalTypeId_Defend)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Multiplier)
+        </dt>
+        <dd>
+            @currentItem.Multiplier
+        </dd>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <dt></dt>
+            <dd class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" />
+            </dd>
+        }
+    </dl>
+</div>
+@if (isAdmin)
+{
+    <br />
+    <p>@Html.ActionLink("Edit", "Edit", new { id = currentItem.Id })</p>
+    <p>@Html.ActionLink("Delete", "Delete", new { id = currentItem.Id })</p>
+}
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

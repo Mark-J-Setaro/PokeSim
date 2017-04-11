@@ -1,0 +1,67 @@
+﻿@model PokeSim.Models.LearnableAttack
+
+@{
+    string displayItem = "Learnable Attack";
+    ViewBag.Title = "Details for " + displayItem;
+    PokeSim.Models.LearnableAttack currentItem = ViewBag.CurrentItem;
+    string attackName = ViewBag.AttackName;
+    string pokemonBaseName = ViewBag.PokemonBaseName;
+
+    string message = ViewBag.Message;
+    bool isAdmin = ViewBag.IsAdmin;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+<div>
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @currentItem.Id
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PokemonBaseId)
+        </dt>
+        <dd>
+            @if (!String.IsNullOrWhiteSpace(pokemonBaseName))
+            {
+                <a href="@Url.Action("Details", "PokemonBase", new { id = currentItem.PokemonBaseId })">@pokemonBaseName</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.PokemonBaseId)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttackId)
+        </dt>
+
+        <dd>
+            @if (!String.IsNullOrWhiteSpace(attackName))
+            {
+                <a href="@Url.Action("Details", "Attack", new { id = currentItem.AttackId })">@attackName</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN ATTACK(@currentItem.AttackId)</span>
+            }
+        </dd>
+    </dl>
+</div>
+@if (isAdmin)
+{
+    <br />
+    <p>@Html.ActionLink("Edit", "Edit", new { id = currentItem.Id })</p>
+    <p>@Html.ActionLink("Delete", "Delete", new { id = currentItem.Id })</p>
+}
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

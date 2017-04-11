@@ -1,0 +1,89 @@
+﻿@model PokeSim.Models.PokemonInstance
+
+@{
+    PokeSim.Models.PokemonInstance currentItem = ViewBag.CurrentItem;
+    string displayItem = "Pokemon Instance";
+    ViewBag.Title = "Edit " + displayItem + " Form";
+    Dictionary<int, PokeSim.Models.PokemonBase> pokemonBaseDict = ViewBag.PokemonBaseDict;
+
+    PokeSim.Models.PokemonBase oldBase = ViewBag.OldBase;
+    List<PokeSim.Models.PokemonBase> invalidNextForms = ViewBag.InvalidNextForms;
+    List<PokeSim.Models.PokemonBase> nextForms = ViewBag.NextForms;
+
+
+
+    string selected = " selected='selected'";
+    string message = ViewBag.Message;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+<p>Select the next form you would like to change to; gender and moves will be preserved. Bear in mind you may need to Edit Species in order to revert it back.</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="no-edit-fields col-md-2">@currentItem.Id</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Old Species</label>
+            <div class="col-md-10">
+                @{
+                    if (oldBase != null)
+                    {
+                        <span class="no-edit-fields col-md-2">@oldBase.Name (@oldBase.Id)</span>
+                    }
+                    else
+                    {
+                        <span class="no-edit-fields col-md-2" style="color:red">UNKNOWN(@currentItem.PokemonBaseId)</span>
+                    }
+                }
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Select New Form</label>
+            <div class="col-md-10">
+                <select class="form-control" id="PokemonBaseID" name="PokemonBaseID">
+                    @if (nextForms != null && nextForms.Count > 0)
+                    {
+                        selected = " selected='selected'";
+                        foreach (PokeSim.Models.PokemonBase form in nextForms)
+                        {
+                            <option value="@form.Id" @selected>(Next)@form.Name</option>
+                            selected = "";
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Change Form" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+                        }
+
+<p>@Html.ActionLink("Back to Details", "Details", new { id = currentItem.Id })</p>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

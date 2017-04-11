@@ -1,0 +1,85 @@
+﻿@model PokeSim.Models.LearnableAttack
+@{
+    string displayItem = "Learnable Attack";
+    ViewBag.Title = displayItem + " Overview";
+
+    Dictionary<int, string> pokemonBases = ViewBag.PokemonBases;
+    Dictionary<int, string> attacks = ViewBag.Attacks;
+    Dictionary<int, Dictionary<int, PokeSim.Models.LearnableAttack>> currentItems = ViewBag.CurrentItems;
+    string message = ViewBag.Message;
+    string displayString = "";
+    bool isAdmin = ViewBag.IsAdmin;
+
+}
+
+<h2>@ViewBag.Title</h2>
+<p style="color:red">@message</p>
+@if (isAdmin)
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<div>
+    <hr />
+    <table class="table">
+        <tr>
+            <th>
+                Pokemon Species
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AttackId)
+            </th>
+            <th>
+                Details
+            </th>
+        </tr>
+        @foreach (KeyValuePair<int, Dictionary<int, PokeSim.Models.LearnableAttack>> entry in currentItems)
+        {
+            <tr style="background-color:aliceblue"><td></td><td></td><td></td><td></td></tr>
+            <tr>
+                <td>
+                    @if (pokemonBases.TryGetValue(entry.Key, out displayString))
+                    {
+                        <a href="@Url.Action("Edit", "PokemonBase", new {id=entry.Key})">@displayString</a>
+                    }
+                    else
+                    {
+                        <span style="color:red">UNKNOWN(@entry.Key)</span>
+                    }
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            foreach (KeyValuePair<int, PokeSim.Models.LearnableAttack> item in entry.Value)
+            {
+                <tr>
+                    <td></td>
+                    <td>
+                        @item.Value.Id
+                    </td>
+                    <td>
+                        @if (attacks.TryGetValue(item.Key, out displayString))
+                    {
+                            <a href="@Url.Action("Edit", "Attack", new {id=item.Key})">@displayString</a>
+                        }
+                        else
+                        {
+                            <span style="color:red">UNKNOWN(@item.Key)</span>
+                        }
+                    </td>
+                    <td>
+                        <span>@Html.ActionLink("Details", "Details", new { id = item.Value.Id })</span>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index")
+</p>

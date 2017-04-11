@@ -1,0 +1,46 @@
+﻿@model PokeSim.Models.ElementalType
+
+@{
+    string displayItem = "Elemental Type";
+    ViewBag.Title = "Delete " + displayItem;
+    string message = ViewBag.Message;
+    PokeSim.Models.ElementalType currentItem = ViewBag.CurrentItem;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<h3>Are you sure you want to delete this @displayItem?</h3>
+<div >
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            <label class="control-label col-md-2">@currentItem.Id</label>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            <label class="control-label col-md-2">@currentItem.Name</label>
+        </dd>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <dt></dt>
+            <dd class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" />
+            </dd>
+        }
+    </dl>
+</div>
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

@@ -1,0 +1,63 @@
+﻿@model PokeSim.Models.Nature
+
+@{
+    string displayItem = "Nature";
+    ViewBag.Title = "Delete " + displayItem;
+    string message = ViewBag.Message;
+    PokeSim.Models.Nature currentItem = ViewBag.CurrentItem;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<h3>Are you sure you want to delete this @displayItem?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @currentItem.Id.ToString()
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @currentItem.Name
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IncreasedStat)
+        </dt>
+
+        <dd>
+            @StatsHandler.getName(currentItem.IncreasedStat)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DecreasedStat)
+        </dt>
+
+        <dd>
+            @StatsHandler.getName(currentItem.DecreasedStat)
+        </dd>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <dt></dt>
+            <dd class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" />
+            </dd>
+        }
+    </dl>
+</div>
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

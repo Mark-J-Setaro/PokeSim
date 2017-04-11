@@ -1,0 +1,212 @@
+﻿@model PokeSim.Models.AttackEffect
+
+@{
+    string displayItem = "Attack Effect";
+    ViewBag.Title = "Edit " + displayItem;
+
+    PokeSim.Models.AttackEffect currentItem = ViewBag.CurrentItem;
+
+    string message = ViewBag.Message;
+
+    Dictionary<int, String> attacks = ViewBag.Attacks;
+    Dictionary<int, String> targets = EnumHelpers.intToEnumNameDict<Target>();
+    Dictionary<string, List<string>> attackEffectTree = EnumHelpers.getEffectNames();
+
+    Dictionary<int, Dictionary<int, string>> attackEffectLookupDict = EnumHelpers.getEffectNameFromId();
+    Dictionary<int, string> attackEffectCategoryDict = EnumHelpers.intToEnumNameDict<AttackEffectCategory>();
+
+    string defaultAttEffCatStr = null;
+    string defaultAttEffStr = null;
+    if (EnumHelpers.intToEnumNameDict<AttackEffectCategory>().TryGetValue(currentItem.EffectCategory, out defaultAttEffCatStr))
+    {
+        if (!attackEffectLookupDict[currentItem.EffectCategory].TryGetValue(currentItem.Effect, out defaultAttEffStr))
+        {
+            defaultAttEffStr = null;
+        }
+    }
+    else
+    {
+        defaultAttEffCatStr = null;
+    }
+
+    string selected = " selected='selected'";
+}
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="no-edit-fields col-md-2">@currentItem.Id</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttackId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AttackId" name="AttackId">
+                    @{
+                        foreach (KeyValuePair<int, string> i in attacks)
+                        {
+                            if (currentItem.AttackId == i.Key)
+                            {
+                                selected = "selected = 'selected'";
+                            }
+                            else
+                            {
+                                selected = "";
+                            }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EffectCategory, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="EffectCategory" name="EffectCategory" onchange="customOnSelectChange( 'EffectCategory', 'Effect' )">
+                    @{
+                        foreach (KeyValuePair<string, List<string>> i in attackEffectTree)
+                        {
+                            if (defaultAttEffCatStr == i.Key)
+                            {
+                                selected = "selected = 'selected'";
+                            }
+                            else
+                            {
+                                selected = "";
+                            }
+                            <option value="@i.Key" @selected>@i.Key</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Effect, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="Effect" name="Effect">
+                    @if (attackEffectLookupDict.ContainsKey(currentItem.EffectCategory))
+                    {
+                        foreach (KeyValuePair<int, string> i in attackEffectLookupDict[currentItem.EffectCategory])
+                        {
+                            if (defaultAttEffStr == i.Value)
+                            {
+                                selected = "selected = 'selected'";
+                            }
+                            else
+                            {
+                                selected = "";
+                            }
+                            <option value="@i.Value"@selected>@i.Value</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="@AttackEffectCategory.None.ToString()" selected="selected">@AttackEffectCategory.None.ToString()</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EffectTarget, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="EffectTarget" name="EffectTarget">
+                    @{
+                        foreach (KeyValuePair<int, string> i in targets)
+                        {
+                            if (currentItem.EffectTarget == i.Key)
+                            {
+                                selected = "selected = 'selected'";
+                            }
+                            else
+                            {
+                                selected = "";
+                            }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Probability, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Probability, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.Probability.ToString() } })
+                @Html.ValidationMessageFor(model => model.Probability, "", new { @class = "text-danger", @value = currentItem.Probability.ToString(), @text = currentItem.Probability.ToString() })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Magnitude, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Magnitude, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.Magnitude.ToString() } })
+                @Html.ValidationMessageFor(model => model.Magnitude, "", new { @class = "text-danger", @value = currentItem.Magnitude.ToString(), @text = currentItem.Magnitude.ToString() })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+<script>
+    function customOnSelectChange(selChangedId, targetSelId) {
+        var selChanged = document.getElementById(selChangedId);
+        var targetSel = document.getElementById(targetSelId);
+        //clear out the current select
+        var i;
+        for (i = targetSel.options.length - 1 ; i >= 0 ; i--) {
+            targetSel.remove(i);
+        }
+
+        var javaEffectDict = {};
+        @foreach (KeyValuePair<string, List<string>> attEff in attackEffectTree)
+        {
+            <text>javaEffectDict['@attEff.Key'] = new Array();</text>
+            for (int i = 0; i < attEff.Value.Count; i++)
+            {
+                <text>javaEffectDict['@attEff.Key'].push('@attEff.Value[i]');</text>
+            }
+        }
+
+        var currentItems = javaEffectDict[selChanged.value];
+
+        var sel = "selected";
+        for (var i = 0; i < currentItems.length; i++)
+        {
+            var newOpt = document.createElement("option");
+            newOpt.text = currentItems[i];
+            newOpt.value = currentItems[i];
+            if (sel == "selected")
+            {
+                newOpt.selected = sel;
+                sel = "";
+            }
+            targetSel.add(newOpt);
+        }
+    }
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

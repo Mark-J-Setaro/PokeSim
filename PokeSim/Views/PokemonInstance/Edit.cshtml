@@ -1,0 +1,320 @@
+﻿@model PokeSim.Models.PokemonInstance
+
+@{
+    PokeSim.Models.PokemonInstance currentItem = ViewBag.CurrentItem;
+
+    string displayItem = "Pokemon Instance";
+    ViewBag.Title = "Edit " + displayItem;
+    Dictionary<int, string> genders = ViewBag.Genders;
+    Dictionary<AbilitiesEnum, PokeSim.Models.Ability> abilityDict = ViewBag.AbilityDict;
+    PokeSim.Models.PokemonBase selectedPokemonBase = ViewBag.SelectedPokemonBase;
+    Dictionary<int, string> natures = ViewBag.Natures;
+    Dictionary<int, string> attacks = ViewBag.Attacks;
+
+    bool isAdmin = ViewBag.IsAdmin;
+    Dictionary<string, PokeSim.Models.ApplicationUser> userDict = ViewBag.UserDict;
+
+    string selected = " selected='selected'";
+    string message = ViewBag.Message;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<p>
+    Values will be sanitized before being entered into the database. For example;
+</p>
+<ul>
+    <li>IVs will be minimized/maximized if they're less than 0 / greater than 31.</li>
+    <li>EVs will be minimized/maximized if they're less than 0 / greater than 252.</li>
+    <li>EVs will be limited if the total exceeds the 510 limit (for example, trying to set them all to 252).</li>
+    <li>Duplicate attacks will be removed, leaving an empty Attack slot.</li>
+</ul>
+<p>
+    Additionally, you may select any of the abilities, but a given Pokemon Species will default to its First Ability if the selected Ability is invalid. This is so that, for evolutionary lines with inconsistent Ability definitions, the Ability is preserved for later evolutions.
+</p>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="no-edit-fields col-md-2">@currentItem.Id</span>
+            </div>
+        </div>
+
+        @if (isAdmin)
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.OwnerId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <select class="form-control" id="OwnerId" name="OwnerId">
+                        @{
+                            foreach (KeyValuePair<string, PokeSim.Models.ApplicationUser> i in userDict)
+                            {
+                                if (currentItem.OwnerId == i.Value.Id) { selected = " selected='selected'"; }
+                                else { selected = ""; }
+                                <option value="@i.Key" @selected>@i.Value.UserName</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.Name } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GenderEnumId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="GenderEnumId" name="GenderEnumId">
+                    @{
+                        foreach (KeyValuePair<int, string> i in genders)
+                        {
+                            if (currentItem.GenderEnumId == i.Key) { selected = " selected='selected'"; }
+                            else { selected = ""; }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AbilityEnumId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AbilityEnumId" name="AbilityEnumId">
+                    @{
+                        foreach (KeyValuePair<AbilitiesEnum, PokeSim.Models.Ability> i in abilityDict)
+                        {
+                            string abilityName = "None";
+                            int value = (int)i.Key;
+                            int abilityId = 0;
+                            if (i.Value != null) { abilityName = i.Value.Name; abilityId = i.Value.Id; }
+                            if (currentItem.AbilityEnumId == (int)i.Key) { selected = " selected='selected'"; }
+                            else { selected = ""; }
+                            <option value="@value" @selected> (@i.Key.ToString()) @abilityName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NatureId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="NatureId" name="NatureId">
+                    @{
+                        foreach (KeyValuePair<int, string> i in natures)
+                        {
+                            if (currentItem.NatureId == i.Key) { selected = " selected='selected'"; }
+                            else { selected = ""; }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Level, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Level, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.Level } })
+                @Html.ValidationMessageFor(model => model.Level, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.XP, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.XP, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.XP } })
+                @Html.ValidationMessageFor(model => model.XP, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttackID_1, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AttackID_1" name="AttackID_1">
+                    <option value="0">None</option>
+                    @foreach (KeyValuePair<int, string> i in attacks)
+                    {
+                        if (currentItem.AttackID_1 == i.Key) { selected = " selected='selected'"; }
+                        else { selected = ""; }
+                        <option value="@i.Key" @selected>@i.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttackID_2, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AttackID_2" name="AttackID_2">
+                    <option value="0">None</option>
+                    @foreach (KeyValuePair<int, string> i in attacks)
+                    {
+                        if (currentItem.AttackID_2 == i.Key) { selected = " selected='selected'"; }
+                        else { selected = ""; }
+                        <option value="@i.Key" @selected>@i.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttackID_3, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AttackID_3" name="AttackID_3">
+                    <option value="0">None</option>
+                    @foreach (KeyValuePair<int, string> i in attacks)
+                    {
+                        if (currentItem.AttackID_3 == i.Key) { selected = " selected='selected'"; }
+                        else { selected = ""; }
+                        <option value="@i.Key" @selected>@i.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttackID_4, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AttackID_4" name="AttackID_4">
+                    <option value="0">None</option>
+                    @foreach (KeyValuePair<int, string> i in attacks)
+                    {
+                        if (currentItem.AttackID_4 == i.Key) { selected = " selected='selected'"; }
+                        else { selected = ""; }
+                        <option value="@i.Key" @selected>@i.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IvHP, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IvHP, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.IvHP } })
+                @Html.ValidationMessageFor(model => model.IvHP, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IvAtt, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IvAtt, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.IvAtt } })
+                @Html.ValidationMessageFor(model => model.IvAtt, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IvDef, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IvDef, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.IvDef } })
+                @Html.ValidationMessageFor(model => model.IvDef, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IvSpAtt, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IvSpAtt, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.IvSpAtt } })
+                @Html.ValidationMessageFor(model => model.IvSpAtt, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IvSpDef, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IvSpDef, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.IvSpDef } })
+                @Html.ValidationMessageFor(model => model.IvSpDef, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IvSpeed, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IvSpeed, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.IvSpeed } })
+                @Html.ValidationMessageFor(model => model.IvSpeed, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EvHP, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EvHP, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.EvHP } })
+                @Html.ValidationMessageFor(model => model.EvHP, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EvAtt, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EvAtt, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.EvAtt } })
+                @Html.ValidationMessageFor(model => model.EvAtt, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EvDef, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EvDef, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.EvDef } })
+                @Html.ValidationMessageFor(model => model.EvDef, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EvSpAtt, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EvSpAtt, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.EvSpAtt } })
+                @Html.ValidationMessageFor(model => model.EvSpAtt, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EvSpDef, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EvSpDef, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.EvSpDef } })
+                @Html.ValidationMessageFor(model => model.EvSpDef, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EvSpeed, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EvSpeed, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.EvSpeed } })
+                @Html.ValidationMessageFor(model => model.EvSpeed, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Edit" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p>@Html.ActionLink("Back to Details", "Details", new { id = currentItem.Id })</p>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,167 @@
+﻿@model PokeSim.Models.Attack
+
+@{    
+    string displayItem = "Attack";
+    ViewBag.Title = displayItem + " Overview";
+    Dictionary<int, string> categories = ViewBag.Categories;
+    Dictionary<int, string> attackMethods = ViewBag.AttackMethods;
+    Dictionary<int, string> elementalTypes = ViewBag.ElementalTypes;
+    Dictionary<int, string> targets = ViewBag.Targets;
+    System.Data.Entity.DbSet<PokeSim.Models.Attack> currentItems = ViewBag.CurrentItems;
+
+    string message = ViewBag.Message;
+    bool isAdmin = ViewBag.IsAdmin;
+
+    string displayString;
+
+}
+
+
+<h2>@ViewBag.Title</h2>
+<p style="color:red">@message</p>
+@if (isAdmin)
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<table class="table">
+<tr>
+    <th>
+        @Html.DisplayNameFor(model => model.Id)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.Name)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.ElementalTypeID)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.Category)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.AttackMethodID)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.MaxPP)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.Power)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.Priority)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.Target)
+    </th>
+
+    <th>
+        @Html.DisplayNameFor(model => model.Accuracy)
+    </th>
+    <th>
+        Details
+    </th>
+    
+</tr>
+@if (currentItems != null)
+{
+    foreach (PokeSim.Models.Attack item in currentItems)
+    {
+        <tr>
+            <td>
+                @item.Id
+            </td>
+
+            <td>
+                @item.Name
+            </td>
+
+            <td>
+                @if (elementalTypes.TryGetValue(item.ElementalTypeID, out displayString))
+                {
+                    <a href="@Url.Action("Details", "ElementalType", new { id = item.ElementalTypeID })">@displayString</a>
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN(@item.ElementalTypeID)</span>
+                }
+            </td>
+
+            <td>
+                @if (categories.ContainsKey(item.Category))
+                {
+                    @categories[item.Category]
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN(@item.Category)</span>
+                }
+            </td>
+
+            <td>
+                @if (attackMethods.ContainsKey(item.AttackMethodID))
+                {
+                    @attackMethods[item.AttackMethodID]
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN(@item.AttackMethodID)</span>
+                }
+            </td>
+
+            <td>
+                @item.MaxPP
+            </td>
+
+            <td>
+                @item.Power
+            </td>
+
+            <td>
+                @item.Priority
+            </td>
+
+            <td>
+                @if (targets.ContainsKey(item.Target))
+                {
+                    @targets[item.Target]
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN(@item.Target)</span>
+                }
+            </td>
+
+            <td>
+                @if (item.Accuracy == EnumHelpers.ACCURACY_NEVER_MISS)
+                {
+                   <span>N.M.</span>
+                }
+                else
+                {
+                    @item.Accuracy
+                }
+            </td>
+            <td>
+                <span>@Html.ActionLink("Details", "Details", new { id = item.Id })</span>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr><td> There are no Attacks to display; create one first. </td></tr>
+}
+</table>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index")
+</p>
+

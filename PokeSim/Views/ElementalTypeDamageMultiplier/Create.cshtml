@@ -1,0 +1,76 @@
+﻿@model PokeSim.Models.ElementalTypeDamageMultiplier
+
+@{
+    string displayItem = "Elemental Comparison";
+    ViewBag.Title = "Create New " + displayItem;
+    string message = ViewBag.Message;
+    Dictionary<int, string> elemTypeDict = ViewBag.ElemTypeDict;
+    string selected = null;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.ElementalTypeId_Attack, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" name="ElementalTypeId_Attack" id="ElementalTypeId_Attack">
+                @{ selected = "selected=\"selected\""; }
+                @foreach (KeyValuePair<int, string> item in elemTypeDict)
+                {
+                    <option value="@item.Key" @selected>@item.Value</option>
+                    selected = "";
+                }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ElementalTypeId_Defend, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" name="ElementalTypeId_Defend" id="ElementalTypeId_Defend">
+                @{ selected = "selected=\"selected\""; }
+                @foreach (KeyValuePair<int, string> item in elemTypeDict)
+                {
+                    <option value="@item.Key" @selected>@item.Value</option>
+                    selected = "";
+                }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Multiplier, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" name="Multiplier" id="Multiplier">
+                    <option value="0">0</option>
+                    <option value=".5">½</option>
+                    <option value="1" selected="selected">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

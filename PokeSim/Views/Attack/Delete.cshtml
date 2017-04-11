@@ -1,0 +1,173 @@
+﻿@model PokeSim.Models.Attack
+
+@{
+    string displayItem = "Attack";
+
+    ViewBag.Title = "Delete " + displayItem;
+    
+    PokeSim.Models.Attack currentItem = ViewBag.CurrentItem;
+    PokeSim.Models.ElementalType elementalType = ViewBag.ElementalType;
+
+    Dictionary<int, string> categories = EnumHelpers.intToEnumNameDict<AttackCategory>();
+    Dictionary<int, string> attackMethods = EnumHelpers.intToEnumNameDict<AttackMethod>();
+    Dictionary<int, string> targets = EnumHelpers.intToEnumNameDict<Target>();
+
+    string message = ViewBag.Message;
+
+    string displayString;
+    string warningString;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<h3>Are you sure you want to delete this @displayItem?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @currentItem.Id
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @currentItem.Name
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @currentItem.Description
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ElementalTypeID)
+        </dt>
+
+        <dd>
+            @if (elementalType!= null)
+            {
+                <a href="@Url.Action("Details", "ElementalType", new { id = elementalType.Id })">@elementalType.Name</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.ElementalTypeID)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+
+        <dd>
+            @if (categories.TryGetValue(currentItem.Category, out displayString))
+            {
+                warningString = "";
+            }
+            else
+            {
+                displayString = "UNKNOWN(" + currentItem.Category + ")";
+                warningString = "style=\"color: red\"";
+            }
+            <span @warningString>@displayString</span>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttackMethodID)
+        </dt>
+
+        <dd>
+           @if (attackMethods.TryGetValue(currentItem.AttackMethodID, out displayString))
+            {
+                warningString = "";
+            }
+            else
+            {
+                displayString = "UNKNOWN(" + currentItem.AttackMethodID + ")";
+                warningString = "style=\"color: red\"";
+            }
+            <span @warningString>@displayString</span>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaxPP)
+        </dt>
+
+        <dd>
+            @currentItem.MaxPP
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Power)
+        </dt>
+
+        <dd>
+            @currentItem.Power
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+
+        <dd>
+            @currentItem.Priority
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Target)
+        </dt>
+
+        <dd>
+            @if (targets.TryGetValue(currentItem.Target, out displayString))
+            {
+                warningString = "";
+            }
+            else
+            {
+                displayString = "UNKNOWN(" + currentItem.Target + ")";
+                warningString = "style=\"color: red\"";
+            }
+            <span @warningString>@displayString</span>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Accuracy)
+        </dt>
+
+        <dd>
+            @if (currentItem.Accuracy == EnumHelpers.ACCURACY_NEVER_MISS)
+            {
+                displayString = "N.M";
+            }
+            else
+            {
+                displayItem = currentItem.Accuracy.ToString();
+            }
+            <span>@displayString</span>
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

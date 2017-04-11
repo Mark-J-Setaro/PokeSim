@@ -1,0 +1,176 @@
+﻿@model PokeSim.Models.Attack
+
+@{
+    string displayItem = "Attack";
+
+    ViewBag.Title = "Edit " + displayItem;
+    string message = ViewBag.Message;
+    PokeSim.Models.Attack currentItem = ViewBag.CurrentItem;
+    Dictionary<int, string> categories = EnumHelpers.intToEnumNameDict<AttackCategory>();
+    Dictionary<int, string> attackMethods = EnumHelpers.intToEnumNameDict<AttackMethod>();
+    Dictionary<int, string> targets = EnumHelpers.intToEnumNameDict<Target>();
+    Dictionary<int, string> elementalTypes = ViewBag.ElementalTypes;
+    //EnumHelpers.ACCURACY_NEVER_MISS;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="no-edit-fields col-md-2">@currentItem.Id</span>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-required="The Name field is required." id="Name" name="Name" type="text" value="@currentItem.Name" />
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="Description" name="Description" type="text" value="@currentItem.Description" />
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ElementalTypeID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="ElementalTypeID" name="ElementalTypeID">
+                    @foreach (KeyValuePair<int, string> i in elementalTypes)
+                    {
+                        string selected = "";
+                        if (i.Key == currentItem.ElementalTypeID)
+                        {
+                            selected = " selected=\"selected\"";
+                        }
+                        <option value="@i.Key" @selected>@i.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="Category" name="Category">
+                    @foreach (KeyValuePair<int, string> i in categories)
+                    {
+                        string selected = "";
+                        if (i.Key == currentItem.Category)
+                        {
+                            selected = " selected=\"selected\"";
+                        }
+                        <option value="@i.Key" @selected>@i.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttackMethodID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AttackMethodID" name="AttackMethodID">
+                    @foreach (KeyValuePair<int, string> i in attackMethods)
+                    {
+                        string selected = "";
+                        if (i.Key == currentItem.AttackMethodID)
+                        {
+                            selected = " selected=\"selected\"";
+                        }
+                        <option value="@i.Key" @selected>@i.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaxPP, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-number="The field Max PP must be a number." data-val-required="The Max PP field is required." id="MaxPP" name="MaxPP" type="number" value="@currentItem.MaxPP" />
+                @Html.ValidationMessageFor(model => model.MaxPP, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Power, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-number="The field Power must be a number." data-val-required="The Power field is required." id="Power" name="Power" type="number" value="@currentItem.Power" />
+                @Html.ValidationMessageFor(model => model.Power, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-number="The field Priority must be a number." data-val-required="The Priority field is required." id="Priority" name="Priority" type="number" value="@currentItem.Priority" />
+                @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Target, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="Target" name="Target">
+                    @foreach (KeyValuePair<int, string> i in targets)
+                    {
+                        string selected = "";
+                        if (i.Key == currentItem.Target)
+                        {
+                            selected = " selected=\"selected\"";
+                        }
+                        <option value="@i.Key" @selected>@i.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Accuracy, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="Accuracy" name="Accuracy">
+                    @for (int i = 0; i < 101; i += 5)
+                    {
+                        string selected = "";
+                        if (currentItem.Accuracy == i)
+                        {
+                            selected = " selected=\"selected\"";
+                        }
+                        <option value="@i"@selected>@i%</option>
+                    }
+                    <option value="@EnumHelpers.ACCURACY_NEVER_MISS"@(currentItem.Accuracy == EnumHelpers.ACCURACY_NEVER_MISS? " selected=\"selected\"" : "")>Never Miss</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

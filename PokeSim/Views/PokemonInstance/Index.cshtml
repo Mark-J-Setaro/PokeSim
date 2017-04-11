@@ -1,0 +1,31 @@
+﻿@{
+    string displayItem = "Pokemon Instance";
+    ViewBag.Title = displayItem + " Index";
+    string message = ViewBag.Message;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<div class="row margin-top-10">
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Create", "PokemonInstance")" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-star"></span> Create New</a>
+        <p>Create new Pokemon Instances here.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Overview", "PokemonInstance")" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-list-alt"></span> Overview</a>
+        <p>Get an overview of the existing Pokemon Instances and their properties.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("LoadDataFromFile", "PokemonInstance")" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-download-alt"></span> Upload Data From File</a>
+        <p>Rather than manually inputting the data, you can load it up from here.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Compare", "PokemonInstance")" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-resize-small"></span> Simulate Attacks</a>
+        <p>Check how effective a pokemon's attack is against another</p>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Homepage", "Index", "Home")
+</p>

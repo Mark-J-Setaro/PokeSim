@@ -1,0 +1,29 @@
+﻿@{
+    string displayItem = "Nature";
+    string displayItemPlural = displayItem + "s";
+    ViewBag.Title = displayItem + " Index";
+    string controllerString = "Nature";
+    string message = ViewBag.Message;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<div class="row margin-top-10">
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Create", controllerString)" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-star"></span> Create New</a>
+        <p>Create a new @displayItem.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Overview", controllerString)" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-list-alt"></span> Overview</a>
+        <p>Get an overview of the existing @displayItemPlural and their properties.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("LoadDataFromFile", controllerString)" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-download-alt"></span> Upload Data From File</a>
+        <p>Rather than manually inputting the data, you can load it up from here.</p>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Homepage", "Index", "Home")
+</p>

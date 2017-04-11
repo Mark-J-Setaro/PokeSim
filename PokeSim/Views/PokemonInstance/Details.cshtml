@@ -1,0 +1,308 @@
+﻿@model PokeSim.Models.PokemonInstance
+
+@{
+    string displayItem = "Pokemon Instance";
+    ViewBag.Title = "Details for " + displayItem;
+    string message = ViewBag.Message;
+
+    PokeSim.Models.ApplicationUser owner = ViewBag.Owner;
+    PokeSim.Models.PokemonInstance currentItem = ViewBag.CurrentItem;
+    PokeSim.Models.PokemonBase pokemonBase = ViewBag.PokemonBase;
+    PokeSim.Models.Nature nature = ViewBag.Nature;
+    PokeSim.Models.Attack att1 = ViewBag.Att1;
+    PokeSim.Models.Attack att2 = ViewBag.Att2;
+    PokeSim.Models.Attack att3 = ViewBag.Att3;
+    PokeSim.Models.Attack att4 = ViewBag.Att4;
+    PokeSim.Models.Ability ability = ViewBag.Ability;
+    
+    Dictionary<int, string> abilityEnumDict = EnumHelpers.intToEnumNameDict<AbilitiesEnum>();
+    Dictionary<int, string> genderEnumDict = EnumHelpers.intToEnumNameDict<GenderEnum>();
+
+    string warningString = "style=\"color:red\"";
+    string displayString;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerId)
+        </dt>
+        <dd>
+            @{
+                if (owner != null)
+                {
+                    <span>@owner.UserName</span>
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN OWNER</span>
+                }
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @currentItem.Name
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PokemonBaseId)
+        </dt>
+        <dd>
+            @if (pokemonBase != null)
+            {
+                <a href="@Url.Action("Details", "PokemonBase", new { id = pokemonBase.Id })">@pokemonBase.Name</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.PokemonBaseId)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GenderEnumId)
+        </dt>
+        <dd>
+            @{
+                if (genderEnumDict.TryGetValue(currentItem.GenderEnumId, out displayString))
+                {
+                    warningString = "";
+                }
+                else
+                {
+                    displayString = "UNKNOWN GENDER (" + currentItem.GenderEnumId + ")";
+                    warningString = "style=\"color:red\"";
+                }
+            }
+            <span @warningString>@displayString</span>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AbilityEnumId)
+        </dt>
+        <dd>
+            @{
+                string abilityEnumString;
+                if (!abilityEnumDict.TryGetValue(currentItem.AbilityEnumId, out abilityEnumString))
+                {
+                    abilityEnumString = "UNKNOWN";
+                }
+                if (ability != null)
+                {
+                    <a href="@Url.Action("Details", "Ability", new { id = ability.Id })">(@abilityEnumString)@ability.Name</a>
+
+                }
+                else
+                {
+                    <span style="color:red">(@abilityEnumString)UNKNOWN</span>
+                }
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NatureId)
+        </dt>
+        <dd>
+            @if (nature != null)
+            {
+                <a href="@Url.Action("Details", "Nature", new { id = nature.Id })">@nature.Name</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.NatureId)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Level)
+        </dt>
+        <dd>
+            @currentItem.Level
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.XP)
+        </dt>
+        <dd>
+            @currentItem.XP
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttackID_1)
+        </dt>
+        <dd>
+            @if (att1 != null)
+            {
+                <a href="@Url.Action("Details", "Attack", new { id = att1.Id })">@att1.Name</a>
+            }
+            else
+            {
+                if (currentItem.AttackID_1 <= 0)
+                {
+                    <span>-</span>
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN(@currentItem.AttackID_1)</span>
+                }
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttackID_2)
+        </dt>
+        <dd>
+            @if (att2 != null)
+            {
+                <a href="@Url.Action("Details", "Attack", new { id = att2.Id })">@att2.Name</a>
+            }
+            else
+            {
+                if (currentItem.AttackID_2 <= 0)
+                {
+                    <span>-</span>
+                }
+                else
+                {
+                    if (currentItem.AttackID_2 <= 0)
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        <span style="color:red">UNKNOWN(@currentItem.AttackID_2)</span>
+                    }
+                }
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttackID_3)
+        </dt>
+        <dd>
+            @if (att3 != null)
+            {
+                <a href="@Url.Action("Details", "Attack", new { id = att3.Id })">@att3.Name</a>
+            }
+            else
+            {
+                if (currentItem.AttackID_3 <= 0)
+                {
+                    <span>-</span>
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN(@currentItem.AttackID_3)</span>
+                }
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttackID_4)
+        </dt>
+        <dd>
+            @if (att4 != null)
+            {
+                <a href="@Url.Action("Details", "Attack", new { id = att4.Id })">@att4.Name</a>
+            }
+            else
+            {
+                if (currentItem.AttackID_4 <= 0)
+                {
+                    <span>-</span>
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN(@currentItem.AttackID_4)</span>
+                }
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IvHP)
+        </dt>
+        <dd>
+            @currentItem.IvHP
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IvAtt)
+        </dt>
+        <dd>
+            @currentItem.IvAtt
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IvDef)
+        </dt>
+        <dd>
+            @currentItem.IvDef
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IvSpAtt)
+        </dt>
+        <dd>
+            @currentItem.IvSpAtt
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IvSpDef)
+        </dt>
+        <dd>
+            @currentItem.IvSpDef
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IvSpeed)
+        </dt>
+        <dd>
+            @currentItem.IvSpeed
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EvHP)
+        </dt>
+        <dd>
+            @currentItem.EvHP
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EvAtt)
+        </dt>
+        <dd>
+            @currentItem.EvAtt
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EvDef)
+        </dt>
+        <dd>
+            @currentItem.EvDef
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EvSpAtt)
+        </dt>
+        <dd>
+            @currentItem.EvSpAtt
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EvSpDef)
+        </dt>
+        <dd>
+            @currentItem.EvSpDef
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EvSpeed)
+        </dt>
+        <dd>
+            @currentItem.EvSpeed
+        </dd>
+    </dl>
+    <p>@Html.ActionLink("Edit Species", "EditSpecies", new { id = currentItem.Id })</p>
+    <p>@Html.ActionLink("Edit Form", "EditForm", new { id = currentItem.Id })</p>
+    <p>@Html.ActionLink("Edit Details", "Edit", new { id = currentItem.Id })</p>
+    <p>@Html.ActionLink("Delete", "Delete", new { id = currentItem.Id })</p>
+    <p>
+        @Html.ActionLink(displayItem + " Index", "Index") |
+        @Html.ActionLink(displayItem + " Overview", "Overview")
+    </p>
+</div>

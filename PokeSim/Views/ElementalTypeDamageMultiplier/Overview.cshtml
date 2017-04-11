@@ -1,0 +1,80 @@
+﻿@model PokeSim.Models.ElementalTypeDamageMultiplier
+
+@{
+    string displayItem = "Elemental Comparison";
+    ViewBag.Title = displayItem + " Overview";
+    string message = ViewBag.Message;
+    Dictionary<int, string> elemTypeDict = ViewBag.elemTypeDict;
+    System.Data.Entity.DbSet<PokeSim.Models.ElementalTypeDamageMultiplier> currentItems = ViewBag.CurrentItems;
+    bool isAdmin = ViewBag.IsAdmin;
+
+    string displayString;
+}
+
+<h2>@ViewBag.Title</h2>
+<p style="color:red">@message</p>
+@if (isAdmin)
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ElementalTypeId_Attack)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ElementalTypeId_Defend)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Multiplier)
+        </th>
+        <th>
+            Details
+        </th>
+    </tr>
+
+    @foreach (PokeSim.Models.ElementalTypeDamageMultiplier item in currentItems)
+    {
+    <tr>
+        <td>
+            @item.Id
+        </td>
+        <td>
+            @if (elemTypeDict.TryGetValue(item.ElementalTypeId_Attack, out displayString))
+            {
+                <a href="@Url.Action("Details", "ElementalType", new { id = item.ElementalTypeId_Attack })">@displayString</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@item.ElementalTypeId_Attack)</span>
+            }
+        </td>
+        <td>
+            @if (elemTypeDict.TryGetValue(item.ElementalTypeId_Defend, out displayString))
+            {
+                <a href="@Url.Action("Details", "ElementalType", new { id = item.ElementalTypeId_Defend })">@displayString</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@item.ElementalTypeId_Defend)</span>
+            }
+        </td>
+        <td>
+            @item.Multiplier
+        </td>
+        <td>
+            <span>@Html.ActionLink("Details", "Details", new { id = item.Id })</span>
+        </td>
+    </tr>
+    }
+</table>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index")
+</p>
+
+item.ElementalTypeId_Attack

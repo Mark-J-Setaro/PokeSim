@@ -1,0 +1,84 @@
+﻿@model PokeSim.Models.ElementalTypeDamageMultiplier
+
+@{
+    string displayItem = "Elemental Comparison";
+    ViewBag.Title = "Edit " + displayItem + " Table";
+    string message = ViewBag.Message;
+    Dictionary<int, Dictionary<int, KeyValuePair<int, double>>> elemTypeDamgDict = (Dictionary<int, Dictionary<int, KeyValuePair<int, double>>>)ViewBag.elemTypeDamgMultDict;
+    Dictionary<int, string> elemTypeDict = (Dictionary<int, string>)ViewBag.elemTypeDict;
+}
+
+<h2>View Table</h2>
+
+<p style="color:red">@message</p>
+
+Attacking type is <span style="color:red">red</span>, defending type is <span style="color:blue">blue</span>.
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+        <table class="table">
+            @if (elemTypeDict != null && elemTypeDict.Count > 0 && elemTypeDamgDict!= null && elemTypeDamgDict.Count > 0)
+            {
+                //fill in the header row;
+                <tr>
+                    <td></td>
+                    @foreach (KeyValuePair<int, string> element in elemTypeDict)
+                    {
+                        <td><p style="color:blue">@element.Value</p></td>
+                    }
+                </tr>
+                //now fill in each of the rows with the proper data.
+                foreach (KeyValuePair<int, string> attEntry in elemTypeDict)
+                {
+                    <tr>
+                        <td>
+                            <p style="color:red">@attEntry.Value</p>
+                        </td>
+                        @foreach (KeyValuePair<int, string> defEntry in elemTypeDict)
+                        {
+                            //select the current item.
+                            KeyValuePair<int, double> cell = elemTypeDamgDict[attEntry.Key][defEntry.Key];
+                            int theKey = cell.Key;
+                            double theVal = cell.Value;
+                            string sel_doub = "";
+                            string sel_half = "";
+                            string sel_norm = "";
+                            string sel_zero = "";
+                            if (theVal >= 1.5)
+                            {
+                                sel_doub = " selected = \"selected\"";
+                            }
+                            else if (theVal >= .75)
+                            {
+                                sel_norm = " selected = \"selected\"";
+                            }
+                            else if (theVal >= .25)
+                            {
+                                sel_half = " selected = \"selected\"";
+                            }
+                            else
+                            {
+                                sel_zero = " selected = \"selected\"";
+                            }
+
+                            <td>
+                                <select style="width: 60px" class="form-control input-group" name="@Html.Raw("sel_" + theKey)" id="@Html.Raw("sel_" + theKey)">
+                                    <option value="0" @Html.Raw(sel_zero)>0</option>
+                                    <option value=".5" @Html.Raw(sel_half)>½</option>
+                                    <option value="1" @Html.Raw(sel_norm)>1</option>
+                                    <option value="2" @Html.Raw(sel_doub)>2</option>
+                                </select>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </table>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+}
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index")
+</p>

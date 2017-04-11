@@ -1,0 +1,37 @@
+﻿@{
+    string displayItem = "Learnable Attack";
+    ViewBag.Title = "Load " + displayItem + " Data";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div style="color:red">@ViewBag.Message</div>
+
+<div>
+    <p>
+        You can load files here; simply copy and paste raw text CSV's (delineated by tab-characters) into the textbox below, and hit "Submit". The server will then attempt to process.
+    </p>
+    <br />
+
+    <p>If there are errors it will display them above.</p>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal col-md-12">
+        <hr />
+        <div class="form-group">
+            <textarea class="col-md-offset-1 col-md-10" name="RawData" id="RawData"></textarea>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-10">
+                <input type="submit" value="Submit" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<div>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</div>

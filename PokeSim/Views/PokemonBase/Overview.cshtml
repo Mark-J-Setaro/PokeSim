@@ -1,0 +1,204 @@
+﻿@model PokeSim.Models.PokemonBase
+
+@{
+    string displayItem = "Pokemon Species";
+    ViewBag.Title = displayItem + " Overview";
+
+    string message = ViewBag.Message;
+
+
+    System.Data.Entity.DbSet<PokeSim.Models.PokemonBase> currentItems = ViewBag.CurrentItems;
+
+    Dictionary<int, string> elements = ViewBag.Elements;
+    Dictionary<int, string> abilities = ViewBag.Abilities;
+
+    Dictionary<int, string> genderTypes = EnumHelpers.intToEnumNameDict<GenderType>();
+    Dictionary<int, string> eggGroups = EnumHelpers.intToEnumNameDict<EggGroup>();
+    string displayString = "";
+    bool isAdmin = ViewBag.IsAdmin;
+}
+
+<h2>@ViewBag.Title</h2>
+<p style="color:red">@message</p>
+@if (isAdmin)
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<div>
+    <hr />
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElemTypeID_1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElemTypeID_2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GenderType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AbilityID_First)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AbilityID_Second)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AbilityID_Hidden)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EggGroup1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EggGroup2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseHP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseAtt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseDef)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseSpAtt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseSpDef)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseSpeed)
+            </th>
+            <th>
+                Details
+            </th>
+        </tr>
+        @foreach (PokeSim.Models.PokemonBase item in currentItems)
+        {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @if (elements.TryGetValue(item.ElemTypeID_1, out displayString))
+                    {
+                        <a href="@Url.Action("Details", "ElementalType", new {id=item.ElemTypeID_1})">@displayString</a>
+                    }
+                    else
+                    {
+                        displayString = "UNKNOWN(" + item.ElemTypeID_1 + ")";
+                        <span style="color:red">@displayString</span>
+                    }
+                </td>
+                <td>
+                    @if (elements.TryGetValue(item.ElemTypeID_2, out displayString))
+                    {
+                        <a href="@Url.Action("Details", "ElementalType", new {id=item.ElemTypeID_2})">@displayString</a>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @if (genderTypes.TryGetValue(item.GenderType, out displayString))
+                    {
+                        <span>@displayString</span>
+                    }
+                    else
+                    {
+                        displayString = "UNKNOWN(" + item.GenderType + ")";
+                        <span style="color:red">@displayString</span>
+                    }
+                </td>
+                <td>
+                    @if (abilities.TryGetValue(item.AbilityID_First, out displayString))
+                    {
+                        <a href="@Url.Action("Details", "Ability", new {id=item.AbilityID_First})">@displayString</a>
+                    }
+                    else
+                    {
+                        displayString = "UNKNOWN(" + item.AbilityID_First + ")";
+                        <span style="color:red">@displayString</span>
+                    }
+                </td>
+                <td>
+                    @if (abilities.TryGetValue(item.AbilityID_Second, out displayString))
+                    {
+                        <a href="@Url.Action("Details", "Ability", new {id=item.AbilityID_Second})">@displayString</a>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @if (abilities.TryGetValue(item.AbilityID_Hidden, out displayString))
+                    {
+                        <a href="@Url.Action("Details", "Ability", new {id=item.AbilityID_Hidden})">@displayString</a>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @if (eggGroups.ContainsKey(item.EggGroup1))
+                    {
+                        <span>@eggGroups[item.EggGroup1]</span>
+                    }
+                    else
+                    {
+                        <span style="color:red">UNKNOWN(@item.EggGroup1)</span>
+                    }
+                </td>
+                <td>
+                    @if (eggGroups.ContainsKey(item.EggGroup2))
+                    {
+                        <span>@eggGroups[item.EggGroup2]</span>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @item.BaseHP
+                </td>
+                <td>
+                    @item.BaseAtt
+                </td>
+                <td>
+                    @item.BaseDef
+                </td>
+                <td>
+                    @item.BaseSpAtt
+                </td>
+                <td>
+                    @item.BaseSpDef
+                </td>
+                <td>
+                    @item.BaseSpeed
+                </td>
+                <td>
+                    <span>@Html.ActionLink("Details", "Details", new { id = item.Id })</span>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index")
+</p>

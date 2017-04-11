@@ -1,0 +1,99 @@
+﻿@model PokeSim.Models.ElementalTypeDamageMultiplier
+
+@{
+    string displayItem = "Elemental Comparison";
+    ViewBag.Title = "Edit " + displayItem;
+    PokeSim.Models.ElementalTypeDamageMultiplier currentItem = ViewBag.CurrentItem;
+    double tempMult = currentItem.Multiplier;
+    string selected = "selected = \"selected\"";
+    string sel_zero = "";
+    string sel_half = "";
+    string sel_nrml = "";
+    string sel_doub = "";
+    if (tempMult >= 1.5) { sel_doub = selected; }
+    else if (tempMult >= .75) { sel_nrml = selected; }
+    else if (tempMult >= .25) { sel_half = selected; }
+    else { sel_zero = selected; }
+
+    string attTypeStr = ViewBag.AttTypeStr;
+    string defTypeStr = ViewBag.DefTypeStr;
+
+    Dictionary<int, string> elemTypeDict = ViewBag.elemTypeDict;
+
+    string message = ViewBag.Message;
+    
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="no-edit-fields col-md-2">@currentItem.Id</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ElementalTypeId_Attack, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (!String.IsNullOrWhiteSpace(attTypeStr))
+                {
+                    <span class="no-edit-fields col-md-2">@attTypeStr</span>
+                }
+                else
+                {
+                    <span class="no-edit-fields col-md-2" style="color:red">UNKNOWN(@currentItem.ElementalTypeId_Attack)</span>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ElementalTypeId_Defend, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (!String.IsNullOrWhiteSpace(defTypeStr))
+                {
+                    <span class="no-edit-fields col-md-2">@defTypeStr</span>
+                }
+                else
+                {
+                    <span class="no-edit-fields col-md-2" style="color:red">UNKNOWN(@currentItem.ElementalTypeId_Defend)</span>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Multiplier, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" name="Multiplier" id="Multiplier">
+                    <option value="0" @sel_zero>0</option>
+                    <option value=".5" @sel_half>½</option>
+                    <option value="1" @sel_nrml>1</option>
+                    <option value="2" @sel_doub>2</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

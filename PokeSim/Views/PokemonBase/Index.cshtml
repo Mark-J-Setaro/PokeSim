@@ -1,0 +1,24 @@
+﻿@{
+    string displayItem = "Pokemon Species";
+    ViewBag.Title = displayItem + " Index";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row margin-top-10">
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Create", "PokemonBase")" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-star"></span> Create New</a>
+        <p>Create new Pokemon Species here.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Overview", "PokemonBase")" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-list-alt"></span> Overview</a>
+        <p>Get an overview of the existing Pokemon Species and their properties.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("LoadDataFromFile", "PokemonBase")" class="btn btn-primary btn-large btn-block"><span class="glyphicon glyphicon-download-alt"></span> Upload Data From File</a>
+        <p>Rather than manually inputting the data, you can load it up from here.</p>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Homepage", "Index", "Home")
+</p>

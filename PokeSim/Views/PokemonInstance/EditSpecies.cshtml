@@ -1,0 +1,89 @@
+﻿@model PokeSim.Models.PokemonInstance
+
+@{
+    PokeSim.Models.PokemonInstance currentItem = ViewBag.CurrentItem;
+    string displayItem = "Pokemon Instance";
+    ViewBag.Title = "Edit " + displayItem + " Species";
+    Dictionary<int, PokeSim.Models.PokemonBase> pokemonBaseDict = ViewBag.PokemonBaseDict;
+
+    string selected = " selected='selected'";
+    string displayString;
+    string warningString = "";
+    string message = ViewBag.Message;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+<p>Select the species you want to change it to. Bear in mind that any incompatible moves will be removed, and it will sanitize the gender.</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="no-edit-fields col-md-2">@currentItem.Id</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Old Species</label>
+            <div class="col-md-10">
+                @{
+                    PokeSim.Models.PokemonBase tempBase;
+                    if (pokemonBaseDict.TryGetValue(currentItem.PokemonBaseId, out tempBase))
+                    {
+                        displayString = tempBase.Name;
+                        warningString = "";
+                    }
+                    else
+                    {
+                        displayString = "UNKNOWN(" + currentItem.PokemonBaseId + ")";
+                        warningString = "style=\"color:red\"";
+                    }
+                }
+                <span class="no-edit-fields col-md-2"@warningString>@displayString</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Old Species</label>
+            <div class="col-md-10">
+                <select class="form-control" id="PokemonBaseID" name="PokemonBaseID">
+                    @{
+                        selected = " selected='selected'";
+                        foreach (KeyValuePair<int, PokeSim.Models.PokemonBase> i in pokemonBaseDict)
+                        {
+                            if (currentItem.PokemonBaseId != i.Key)
+                            {
+                                <option value="@i.Key" @selected>@i.Value.Name</option>
+                                selected = "";
+                            }
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Change Species" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p>@Html.ActionLink("Back to Details", "Details", new { id = currentItem.Id })</p>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,54 @@
+﻿@model PokeSim.Models.ElementalTypeDamageMultiplier
+
+@{
+    string displayItem = "Elemental Comparison";
+    ViewBag.Title = "View " + displayItem + " Table";
+    string message = ViewBag.Message;
+    Dictionary<int, Dictionary<int, KeyValuePair<int, double>>> elemTypeDamgDict = (Dictionary<int, Dictionary<int, KeyValuePair<int, double>>>)ViewBag.elemTypeDamgMultDict;
+    Dictionary<int, string> elemTypeDict = (Dictionary<int, string>)ViewBag.elemTypeDict;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+Attacking type is <span style="color:red">red</span>, defending type is <span style="color:blue">blue</span>.
+<table class="table">
+    @if (elemTypeDict != null && elemTypeDamgDict.Count > 0)
+    {
+        //fill in the header row;
+        <tr>
+            <td></td>
+            @foreach (KeyValuePair<int, string> entry in elemTypeDict)
+            {
+                <td><p style="color:blue">@entry.Value</p></td>
+            }
+        </tr>
+        //now fill in each of the rows with the proper data.
+        foreach (KeyValuePair<int, string> attEntry in elemTypeDict)
+        {
+            <tr>
+                <td>
+                    <p style="color:red">@attEntry.Value</p>
+                </td>
+            @foreach (KeyValuePair<int, string> defEntry in elemTypeDict)
+            {
+                double value = elemTypeDamgDict[attEntry.Key][defEntry.Key].Value;
+                string color;
+                string symbol = value.ToString();
+                if (value >= 1.5) { color = "ce87ff"; }
+                else if (value >= .75) { color = "87e3ff"; }
+                else if (value >= .25) { color = "ffef87";  symbol = "½"; }
+                else  { color = "ff8987"; }
+                <td>
+                    <span style="background-color: #@color">&#160 @symbol &#160 </span>
+                </td>
+            }
+            </tr>
+        }
+    }
+</table>
+ 
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") 
+</p>

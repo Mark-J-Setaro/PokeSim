@@ -1,0 +1,89 @@
+﻿@model PokeSim.Models.FormChange
+
+@{
+    string displayItem = "Form Change";
+    ViewBag.Title = "Details for " + displayItem;
+
+    PokeSim.Models.FormChange currentItem = ViewBag.CurrentItem;
+    PokeSim.Models.PokemonBase pkmnBasePrev = ViewBag.PkmnBasePrev;
+    PokeSim.Models.PokemonBase pkmnBaseNext = ViewBag.PkmnBaseNext;
+    Dictionary<int, string> formChangeDict = EnumHelpers.intToEnumNameDict<FormChangeType>();
+    ViewBag.CurrentItem = currentItem;
+
+
+    string message = ViewBag.Message;
+
+    string displayString = "";
+    string warningString = "";
+    bool isAdmin = ViewBag.IsAdmin;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @currentItem.Id
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PokemonBaseId_Prev)
+        </dt>
+        <dd>
+            @if (pkmnBasePrev != null)
+            {
+                <a href="@Url.Action("Details", "PokemonBase", new { id = pkmnBasePrev.Id })">@pkmnBasePrev.Name</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.PokemonBaseId_Prev)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PokemonBaseId_Next)
+        </dt>
+        <dd>
+            @if (pkmnBaseNext != null)
+            {
+                <a href="@Url.Action("Details", "PokemonBase", new { id = pkmnBaseNext.Id })">@pkmnBaseNext.Name</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.PokemonBaseId_Next)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FormChangeEnum)
+        </dt>
+        <dd>
+            @if (formChangeDict.TryGetValue(currentItem.FormChangeEnum, out displayString))
+            {
+                warningString = "";
+            }
+            else
+            {
+                displayString = "UNKNOWN SPECIES(" + currentItem.PokemonBaseId_Next + ")";
+                warningString = "style=\"color: red\"";
+            }
+            <span @warningString>@displayString</span>
+        </dd>
+    </dl>
+</div>
+@if (isAdmin)
+{
+    <br />
+    <p>@Html.ActionLink("Edit", "Edit", new { id = currentItem.Id })</p>
+    <p>@Html.ActionLink("Delete", "Delete", new { id = currentItem.Id })</p>
+}
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

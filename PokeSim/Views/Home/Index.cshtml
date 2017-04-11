@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row margin-top-10">
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "ElementalType")" class="btn btn-primary btn-large btn-block">1. Elemental Types</a>
+        <p><span style="color:red; font-weight:bold">Start here;</span> add and edit the basic elemental types for your game context.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "ElementalTypeDamagemultiplier")" class="btn btn-primary btn-large btn-block">2. Elemental Comparisons</a>
+        <p>Define how the elements compare to each other - think 'rock-paper-scissors'. </p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "Nature")" class="btn btn-primary btn-large btn-block">3a. Natures</a>
+        <p>Define the different Pokemon natures; a Pokemon's nature aids or inhibits the growth of different stats.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "Ability")" class="btn btn-primary btn-large btn-block">3b. Abilities</a>
+        <p>Define the different Pokemon abilities, which can have varying and drastic effects.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "Attack")" class="btn btn-primary btn-large btn-block">3c. Attacks</a>
+        <p>Define the different Pokemon Attacks.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "AttackEffect")" class="btn btn-primary btn-large btn-block">4. Attack Effects</a>
+        <p>Associate effects with the given attacks.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "PokemonBase")" class="btn btn-primary btn-large btn-block">5. Pokemon Species</a>
+        <p>Define the traits all Pokemon of a given species share.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "LearnableAttack")" class="btn btn-primary btn-large btn-block">6a. Learnable Attacks</a>
+        <p>Associate Learnable Attacks with Pokemon Species.</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "FormChange")" class="btn btn-primary btn-large btn-block">6b. Form Changes</a>
+        <p>Define the ways a given Pokemon Species may change forms into another (ie, Bulbasaur -> Ivysaur, or Gyarados -> Mega Gyarados)</p>
+    </div>
+    <div class="col-md-3 margin-top-10">
+        <a href="@Url.Action("Index", "PokemonInstance")" class="btn btn-primary btn-large btn-block">7. Pokemon Instance</a>
+        <p>Define individual pokemon here.</p>
+    </div>
+</div>

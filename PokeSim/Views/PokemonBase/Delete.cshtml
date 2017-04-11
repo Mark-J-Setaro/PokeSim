@@ -1,0 +1,197 @@
+﻿@model PokeSim.Models.PokemonBase
+
+@{
+    string displayItem = "Pokemon Species";
+    ViewBag.Title = "Delete " + displayItem;
+
+    string message = ViewBag.Message;
+
+    PokeSim.Models.PokemonBase currentItem = ViewBag.CurrentItem;
+    
+    Dictionary<int, string> genderTypes = EnumHelpers.intToEnumNameDict<GenderType>();
+    Dictionary<int, string> eggGroups = EnumHelpers.intToEnumNameDict<EggGroup>();
+
+    PokeSim.Models.Ability abilityFirst = ViewBag.AbilityFirst;
+    PokeSim.Models.Ability abilitySecond = ViewBag.AbilitySecond;
+    PokeSim.Models.Ability abilityHidden = ViewBag.AbilityHidden;
+
+    PokeSim.Models.ElementalType element1 = ViewBag.Element1;
+    PokeSim.Models.ElementalType element2 = ViewBag.Element2;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<h3>Are you sure you want to delete this @displayItem?</h3>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @currentItem.Id
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @currentItem.Name
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ElemTypeID_1)
+        </dt>
+        <dd>
+            @if (element1 != null)
+            {
+                <a href="@Url.Action("Details", "ElementalType", new {id=element1.Id})">@element1.Name</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.ElemTypeID_1)</span>
+            }
+        </dd>
+
+        @if (element2 != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.ElemTypeID_2)
+            </dt>
+
+            <dd>
+                <a href="@Url.Action("Details", "ElementalType", new {id=element2.Id})">@element2.Name</a>
+            </dd>
+        }
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GenderType)
+        </dt>
+
+        <dd>
+            @if (genderTypes.ContainsKey(currentItem.GenderType))
+            {
+                @genderTypes[currentItem.GenderType]
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.GenderType)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AbilityID_First)
+        </dt>
+        <dd>
+            @if (abilityFirst != null)
+            {
+                <a href="@Url.Action("Details", "Ability", new {id=abilityFirst.Id})">@abilityFirst.Name</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.AbilityID_First)</span>
+            }
+        </dd>
+
+        @if (abilitySecond != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.AbilityID_Second)
+            </dt>
+            <dd>
+                <a href="@Url.Action("Details", "Ability", new {id=abilitySecond.Id})">@abilitySecond.Name</a>
+            </dd>
+        }
+
+        @if (abilityHidden != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.AbilityID_Hidden)
+            </dt>
+            <dd>
+                <a href="@Url.Action("Details", "Ability", new {id=abilityHidden.Id})">@abilityHidden.Name</a>
+            </dd>
+        }
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EggGroup1)
+        </dt>
+
+        <dd>
+            @if (eggGroups.ContainsKey(currentItem.EggGroup1))
+            {
+                <span>@eggGroups[currentItem.EggGroup1]</span>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN(@currentItem.EggGroup1)</span>
+            }
+        </dd>
+
+        @if (eggGroups.ContainsKey(currentItem.EggGroup2))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.EggGroup2)
+            </dt>
+            <dd>
+                <span>@eggGroups[currentItem.EggGroup2]</span>
+            </dd>
+        }
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseHP)
+        </dt>
+        <dd>
+            @currentItem.BaseHP
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseAtt)
+        </dt>
+        <dd>
+            @currentItem.BaseAtt
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseDef)
+        </dt>
+        <dd>
+            @currentItem.BaseDef
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseSpAtt)
+        </dt>
+        <dd>
+            @currentItem.BaseSpAtt
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseSpDef)
+        </dt>
+        <dd>
+            @currentItem.BaseSpDef
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseSpeed)
+        </dt>
+        <dd>
+            @currentItem.BaseSpeed
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to Overview", "Overview")
+        </div>
+    }
+</div>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

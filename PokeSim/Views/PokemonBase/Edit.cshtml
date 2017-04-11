@@ -1,0 +1,237 @@
+﻿@model PokeSim.Models.PokemonBase
+
+@{
+    string displayItem = "Pokemon Species";
+    ViewBag.Title = "Edit " + displayItem;
+
+    string message = ViewBag.Message;
+
+    PokeSim.Models.PokemonBase currentItem = ViewBag.CurrentItem;
+
+    Dictionary<int, string> elements = ViewBag.Elements;
+    Dictionary<int, string> abilities = ViewBag.Abilities;
+
+    Dictionary<int, string> genderTypes = EnumHelpers.intToEnumNameDict<GenderType>();
+    Dictionary<int, string> eggGroups = EnumHelpers.intToEnumNameDict<EggGroup>();
+
+
+    string selected = " selected='selected'";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="no-edit-fields col-md-2">@currentItem.Id</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="Name" name="Name" type="text" value="@currentItem.Name" />
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ElemTypeID_1, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="ElemTypeID_1" name="ElemTypeID_1">
+                    @{
+                        foreach (KeyValuePair<int, string> i in elements)
+                        {
+                            if (currentItem.ElemTypeID_1 == i.Key) { selected = " selected='selected'"; } else { selected = ""; }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ElemTypeID_2, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="ElemTypeID_2" name="ElemTypeID_2">
+                    @{
+                        <option value="-1">None</option>
+                        foreach (KeyValuePair<int, string> i in elements)
+                        {
+                            if (currentItem.ElemTypeID_2 == i.Key) { selected = " selected='selected'"; } else { selected = ""; }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GenderType, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="GenderType" name="GenderType">
+                    @{
+                        foreach (KeyValuePair<int, string> i in genderTypes)
+                        {
+                            if (currentItem.GenderType == i.Key) { selected = " selected='selected'"; } else { selected = ""; }
+                            <option value="@i.Value" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AbilityID_First, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AbilityID_First" name="AbilityID_First">
+                    @{
+                        foreach (KeyValuePair<int, string> i in abilities)
+                        {
+                            if (currentItem.AbilityID_First == i.Key) { selected = " selected='selected'"; } else { selected = ""; }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AbilityID_Second, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AbilityID_Second" name="AbilityID_Second">
+                    @{
+                        <option value="-1">None</option>
+                        foreach (KeyValuePair<int, string> i in abilities)
+                        {
+                            if (currentItem.AbilityID_Second == i.Key) { selected = " selected='selected'"; } else { selected = ""; }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AbilityID_Hidden, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="AbilityID_Hidden" name="AbilityID_Hidden">
+                    @{
+                        <option value="-1">None</option>
+                        foreach (KeyValuePair<int, string> i in abilities)
+                        {
+                            if (currentItem.AbilityID_Hidden == i.Key) { selected = " selected='selected'"; } else { selected = ""; }
+                            <option value="@i.Key">@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EggGroup1, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="EggGroup1" name="EggGroup1">
+                    @{
+                        selected = " selected='selected'";
+                        foreach (KeyValuePair<int, string> i in eggGroups)
+                        {
+                            if (currentItem.EggGroup1 == i.Key) { selected = " selected='selected'"; } else { selected = ""; }
+                            <option value="@i.Value" @selected>@i.Value</option>
+                            selected = "";
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EggGroup2, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="EggGroup2" name="EggGroup2">
+                    @{
+                        <option value="-1">None</option>
+                        foreach (KeyValuePair<int, string> i in eggGroups)
+                        {
+                            if (currentItem.EggGroup1 == i.Key) { selected = " selected='selected'"; } else { selected = ""; }
+                            <option value="@i.Value">@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BaseHP, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BaseHP, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.BaseHP.ToString() } })
+                @Html.ValidationMessageFor(model => model.BaseHP, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BaseAtt, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BaseAtt, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.BaseAtt.ToString() } })
+                @Html.ValidationMessageFor(model => model.BaseAtt, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BaseDef, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BaseDef, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.BaseDef.ToString() } })
+                @Html.ValidationMessageFor(model => model.BaseDef, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BaseSpAtt, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BaseSpAtt, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.BaseSpAtt.ToString() } })
+                @Html.ValidationMessageFor(model => model.BaseSpAtt, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BaseSpDef, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BaseSpDef, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.BaseSpDef.ToString() } })
+                @Html.ValidationMessageFor(model => model.BaseSpDef, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BaseSpeed, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BaseSpeed, new { htmlAttributes = new { @class = "form-control", @Value = currentItem.BaseSpeed.ToString() } })
+                @Html.ValidationMessageFor(model => model.BaseSpeed, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Edit" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+                        }
+
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

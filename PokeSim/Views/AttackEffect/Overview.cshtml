@@ -1,0 +1,130 @@
+﻿@model PokeSim.Models.AttackEffect
+
+@{
+    string displayItem = "Attack Effect";
+    ViewBag.Title = displayItem + " Overview";
+
+    Dictionary<int, String> attacks = ViewBag.Attacks;
+    Dictionary<int, String> targets = EnumHelpers.intToEnumNameDict<Target>();
+
+    Dictionary<int, string> attackEffectCategories = EnumHelpers.intToEnumNameDict<AttackEffectCategory>();
+    Dictionary<int, Dictionary<int, string>> attackEffectTree = EnumHelpers.getEffectNameFromId();
+
+    Dictionary <int, List<PokeSim.Models.AttackEffect>> currentItems = ViewBag.CurrentItems;
+
+    string message = ViewBag.Message;
+    string displayString;
+
+    bool isAdmin = ViewBag.IsAdmin;
+}
+
+
+<h2>@ViewBag.Title</h2>
+<p style="color:red">@message</p>
+@if (isAdmin)
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<div>
+    <table class="table">
+        <tr>
+            <th>
+                Attack
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EffectCategory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Effect)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EffectTarget)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Probability)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Magnitude)
+            </th>
+            <th>
+                Details
+            </th>
+        </tr>
+        @foreach (KeyValuePair<int, List<PokeSim.Models.AttackEffect>> entry in currentItems)
+        {
+
+            <tr style="background-color:aliceblue"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr>
+                <td>
+                @if (attacks.TryGetValue(entry.Key, out displayString))
+                {
+                    <a href="@Url.Action("Details", "Attack", new { id = entry.Key })">@displayString</a>
+                }
+                else
+                {
+                    <span style="color:red">UNKNOWN(@entry.Key)</span>
+                }
+                </td>
+                <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            foreach (PokeSim.Models.AttackEffect item in entry.Value)
+            {
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @try
+                        {
+                            <span>@attackEffectCategories[item.EffectCategory]</span>
+                        }
+                        catch
+                        {
+                            <span style="color:red">UNKNOWN EFFECT CATEGORY!(@item.EffectCategory)</span>
+                        }
+                    </td>
+                    <td>
+                        @try
+                        {
+                            <span>@attackEffectTree[item.EffectCategory][item.Effect]</span>
+                        }
+                        catch
+                        {
+                            <span style="color:red">UNKNOWN EFFECT!(@item.EffectCategory,@item.Effect)</span>
+                        }
+                    </td>
+                    <td>
+                        @try
+                        {
+                            <span>@targets[item.EffectTarget]</span>
+                        }
+                        catch
+                        {
+                            <span style="color:red">UNKNOWN TARGET!(@item.EffectTarget)</span>
+                        }
+                    </td>
+                    <td>
+                        <span>@item.Probability</span>%
+                    </td>
+                    <td>
+                        <span>@item.Magnitude</span>
+                    </td>
+                    <td>
+                        <span>@Html.ActionLink("Details", "Details", new { id = item.Id })</span>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index")
+</p>
+

@@ -1,0 +1,136 @@
+﻿@{
+    string displayItem = "Pokemon Instance";
+    string displayItemPlural = displayItem + "s";
+    ViewBag.Title = "Compare " + displayItemPlural;
+
+    List<KeyValuePair<PokeSim.Models.Attack, int>> attDmgList = ViewBag.AttDmgList;
+    
+    PokeSim.Models.PokemonInstance instAtt = ViewBag.InstAtt;
+    PokeSim.Models.PokemonInstance instDef = ViewBag.InstDef;
+
+    Dictionary<string, List<PokeSim.Models.PokemonInstance>> availableItems = ViewBag.AvailableItems;
+
+    bool isAdmin = ViewBag.IsAdmin;
+    string selected = " selected='selected'";
+    string message = ViewBag.Message;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+<p>Select the next form you would like to change to; gender and moves will be preserved. Bear in mind you may need to Edit Species in order to revert it back.</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Select Attacking Pokemon</label>
+            <div class="col-md-10">
+                <select class="form-control" id="AttackingPokemonInstanceId" name="AttackingPokemonInstanceId">
+                    @foreach (KeyValuePair<string, List<PokeSim.Models.PokemonInstance>> kvp in availableItems)
+                    {
+                        foreach (PokeSim.Models.PokemonInstance item in kvp.Value)
+                        {
+                            if (item == instAtt)
+                            {
+                                selected = " selected='selected'";
+                            }
+                            else
+                            {
+                                selected = "";
+                            }
+                            <option value="@item.Id" @selected>@item.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Select Defending Pokemon</label>
+            <div class="col-md-10">
+                <select class="form-control" id="DefendingPokemonInstanceId" name="DefendingPokemonInstanceId">
+                    @foreach (KeyValuePair<string, List<PokeSim.Models.PokemonInstance>> kvp in availableItems)
+                    {
+                        foreach (PokeSim.Models.PokemonInstance item in kvp.Value)
+                        {
+                            if (item == instDef)
+                            {
+                                selected = " selected='selected'";
+                            }
+                            else
+                            {
+                                selected = "";
+                            }
+                            <option value="@item.Id" @selected>@item.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Compare" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (instAtt != null && instDef != null && attDmgList != null)
+{
+    <p>
+    <a href="@Url.Action("Details", "PokemonInstance", new { id = instAtt.Id })">@instAtt.Name</a>
+    <span> -> </span>
+    <a href="@Url.Action("Details", "PokemonInstance", new { id = instDef.Id })">@instDef.Name</a>
+    </p>
+    <br />
+    <table class="table">
+        <tr>
+            <th>Attack</th>
+            <th>Min</th>
+            <th>Max</th>
+        </tr>
+            @foreach (KeyValuePair<PokeSim.Models.Attack, int> kvp in attDmgList)
+            {
+                <tr>
+                    @if (kvp.Key != null)
+                    {
+                        <td><a href="@Url.Action("Details", "Attack", new { id = kvp.Key.Id })">@kvp.Key.Name</a></td>
+                        if (kvp.Value == 0)
+                        {
+                            <td>-</td>
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            <td>@((int)(kvp.Value * .85))</td>
+                            <td>@kvp.Value</td>
+                        }
+                    }
+                    else
+                    {
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    }
+        
+                </tr>
+            }
+    </table>
+}
+
+
+
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

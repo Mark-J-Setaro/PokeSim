@@ -1,0 +1,118 @@
+﻿@model PokeSim.Models.FormChange
+@{
+    string displayItem = "Form Change";
+    ViewBag.Title = displayItem + " Overview";
+
+    Dictionary<int, string> pkmnBaseDict = ViewBag.PkmnBaseDict;
+    Dictionary<int, Dictionary<int, List<PokeSim.Models.FormChange>>> currentItems = ViewBag.CurrentItems;
+
+    Dictionary<int, string> formChangeDict = EnumHelpers.intToEnumNameDict<FormChangeType>();
+    string message = ViewBag.Message;
+
+    string displayString = "";
+    string warningString = "";
+
+    bool isAdmin = ViewBag.IsAdmin;
+}
+
+<h2>@ViewBag.Title</h2>
+<p style="color:red">@message</p>
+@if (isAdmin)
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<div>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PokemonBaseId_Prev)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FormChangeEnum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PokemonBaseId_Next)
+            </th>
+            <th>
+                Details
+            </th>
+        </tr>
+        @foreach (KeyValuePair<int, Dictionary<int, List<PokeSim.Models.FormChange>>> entry in currentItems)
+        {
+            <tr style="background-color:aliceblue"> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+            <tr>
+                <td>
+                    @if (pkmnBaseDict.TryGetValue(entry.Key, out displayString))
+                    {
+                        <a href="@Url.Action("Edit", "PokemonBase", new {id=entry.Key})">@displayString</a>
+                    }
+                    else
+                    {
+                        displayString = "UNKNOWN(" + entry.Key + ")";
+                        <span style="color:red">@displayString</span>
+                    }
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                
+            </tr>
+            foreach (KeyValuePair<int, List<PokeSim.Models.FormChange>> formChangeType in entry.Value)
+            {
+                <tr>
+                    <td></td>
+                    <td>
+                        @if (formChangeDict.TryGetValue(formChangeType.Key, out displayString))
+                        {
+                            warningString = "";
+                        }
+                        else
+                        {
+                            displayString = "UNKNOWN(" + formChangeType.Key + ")";
+                            warningString = "style=\"color:red\"";
+                        }
+                        <span @warningString>@displayString</span>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    
+                </tr>
+                foreach (PokeSim.Models.FormChange item in formChangeType.Value)
+                {
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            @item.Id
+                        </td>
+                        <td>
+                            @if (pkmnBaseDict.TryGetValue(item.PokemonBaseId_Next, out displayString))
+                            {
+                                <a href="@Url.Action("Edit", "PokemonBase", new {id=item.PokemonBaseId_Next})">@displayString</a>
+                            }
+                            else
+                            {
+                                displayString = "UNKNOWN(" + entry.Key + ")";
+                                <span style="color:red">@displayString</span>
+                            }
+                        </td>
+                        <td>
+                            <span>@Html.ActionLink("Details", "Details", new { id = item.Id })</span>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+        <tr style="background-color:aliceblue"> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+    </table>
+</div>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index")
+</p>

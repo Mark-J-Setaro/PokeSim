@@ -1,0 +1,53 @@
+﻿@model PokeSim.Models.Ability
+
+@{
+    string displayItem = "Ability";
+    ViewBag.Title = "Details for " + displayItem;
+    string message = ViewBag.Message;
+    PokeSim.Models.Ability currentItem = ViewBag.CurrentItem;
+    bool isAdmin = ViewBag.IsAdmin;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @currentItem.Id
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @currentItem.Name
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @currentItem.Description
+        </dd>
+    </dl>
+</div>
+<br />
+@if (isAdmin)
+{
+    <br />
+    <p>@Html.ActionLink("Edit", "Edit", new { id = currentItem.Id })</p>
+    <p>@Html.ActionLink("Delete", "Delete", new { id = currentItem.Id })</p>
+}
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

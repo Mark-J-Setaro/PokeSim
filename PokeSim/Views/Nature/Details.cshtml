@@ -1,0 +1,60 @@
+﻿@model PokeSim.Models.Nature
+
+@{
+    string displayItem = "Nature";
+    ViewBag.Title = "Details for " + displayItem;
+    string message = ViewBag.Message;
+    PokeSim.Models.Nature currentItem = ViewBag.CurrentItem;
+    bool isAdmin = ViewBag.IsAdmin;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @currentItem.Id.ToString()
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @currentItem.Name
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IncreasedStat)
+        </dt>
+
+        <dd>
+            @StatsHandler.getName(currentItem.IncreasedStat)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DecreasedStat)
+        </dt>
+
+        <dd>
+            @StatsHandler.getName(currentItem.DecreasedStat)
+        </dd>
+    </dl>
+</div>
+@if (isAdmin)
+{
+    <br />
+    <p>@Html.ActionLink("Edit", "Edit", new { id = currentItem.Id })</p>
+    <p>@Html.ActionLink("Delete", "Delete", new { id = currentItem.Id })</p>
+}
+<br />
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

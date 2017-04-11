@@ -1,0 +1,55 @@
+﻿@model PokeSim.Models.PokemonInstance
+
+@{
+    string displayItem = "Pokemon Instance";
+    ViewBag.Title = "Create New " + displayItem;
+    Dictionary<int, string> pokemonBaseDict = ViewBag.PokemonBaseDict;
+
+    string selected = " selected='selected'";
+    string message = ViewBag.Message;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+<h2>Select a Species</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PokemonBaseId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="PokemonBaseID" name="PokemonBaseID">
+                    @{
+                        selected = " selected='selected'";
+                        foreach (KeyValuePair<int, string> i in pokemonBaseDict)
+                        {
+                            <option value="@i.Key" @selected>@i.Value</option>
+                            selected = "";
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

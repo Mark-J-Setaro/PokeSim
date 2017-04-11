@@ -1,0 +1,110 @@
+﻿@model PokeSim.Models.AttackEffect
+
+@{
+    string displayItem = "Attack Effect";
+    ViewBag.Title = "Delete " + displayItem;
+
+    PokeSim.Models.Attack attack = ViewBag.Attacks;
+    Dictionary<int, String> targets = EnumHelpers.intToEnumNameDict<Target>();
+
+    Dictionary<int, string> attackEffectCategories = EnumHelpers.intToEnumNameDict<AttackEffectCategory>();
+    Dictionary<int, Dictionary<int, string>> attackEffectTree = EnumHelpers.getEffectNameFromId();
+
+    PokeSim.Models.AttackEffect currentItem = ViewBag.CurrentItem;
+
+    string message = ViewBag.Message;
+}
+
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+<h3>Are you sure you want to delete this @displayItem?</h3>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AttackId)
+        </dt>
+        <dd>
+            @if (attack != null)
+            {
+                <a href="@Url.Action("Details", "Attack", new { id = attack.Id })">@attack.Name</a>
+            }
+            else
+            {
+                <span style="color:red">UNKNOWN ATTACK!(@currentItem.AttackId)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EffectCategory)
+        </dt>
+        <dd>
+            @try
+            {
+                <span>@attackEffectCategories[currentItem.EffectCategory]</span>
+            }
+            catch
+            {
+                <span style="color:red">UNKNOWN EFFECT CATEGORY!(@currentItem.EffectCategory)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Effect)
+        </dt>
+        <dd>
+            @try
+            {
+                <span>@attackEffectTree[currentItem.EffectCategory][currentItem.Effect]</span>
+            }
+            catch
+            {
+                <span style="color:red">UNKNOWN EFFECT!(@currentItem.EffectCategory,@currentItem.Effect)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EffectTarget)
+        </dt>
+        <dd>
+            @try
+            {
+                <span>@targets[currentItem.EffectTarget]</span>
+            }
+            catch
+            {
+                <span style="color:red">UNKNOWN TARGET!(@currentItem.EffectTarget)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Probability)
+        </dt>
+        <dd>
+            <span>@currentItem.Probability</span>%
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Magnitude)
+        </dt>
+        <dd>
+            <span>@currentItem.Magnitude</span>
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>

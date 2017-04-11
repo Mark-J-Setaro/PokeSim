@@ -1,0 +1,355 @@
+﻿@model PokeSim.Models.PokemonInstance
+
+@{
+
+    string displayItem = "Pokemon Instance";
+    ViewBag.Title = displayItem + " Overview";
+
+    Dictionary<int, PokeSim.Models.PokemonBase> pokemonBaseDict = ViewBag.PokemonBaseDict;
+    Dictionary<int, PokeSim.Models.Nature> natureDict = ViewBag.NatureDict;
+    Dictionary<int, string> attackDict = ViewBag.AttackDict;
+    Dictionary<int, string> abilityDict = ViewBag.AbilityDict;
+
+    Dictionary<int, string> genderDict = EnumHelpers.getAllGenderIdsDict();
+
+
+    Dictionary<string, List<PokeSim.Models.PokemonInstance>> currentItems = ViewBag.CurrentItems;
+    Dictionary<string, PokeSim.Models.ApplicationUser> userDict = ViewBag.UserDict;
+
+    string message = ViewBag.Message;
+
+    string warningString = "style=\"color:red\"";
+    string displayString;
+}
+
+<h2>@ViewBag.Title</h2>
+<p style="color:red">@message</p>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div>
+    <hr />
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OwnerId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PokemonBaseId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GenderEnumId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AbilityEnumId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NatureId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AttackID_1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AttackID_2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AttackID_3)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AttackID_4)
+            </th>
+            <th>
+                HP
+            </th>
+            <th>
+                Att
+            </th>
+            <th>
+                Def
+            </th>
+            <th>
+                SpAtt
+            </th>
+            <th>
+                SpDef
+            </th>
+            <th>
+                Speed
+            </th>
+            <th>
+                Options
+            </th>
+        </tr>
+        @foreach (KeyValuePair<string, PokeSim.Models.ApplicationUser> user in userDict)
+        {
+            <tr style="background-color:aliceblue">
+                <td></td><td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+                <td>
+                    @user.Value.UserName
+                </td>
+                <td></td><td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td>
+            </tr>
+
+            List<PokeSim.Models.PokemonInstance> tempList;
+            if (!currentItems.TryGetValue( user.Key, out tempList ))
+            {
+                tempList = new List<PokeSim.Models.PokemonInstance>();
+            }
+
+            foreach (PokeSim.Models.PokemonInstance item in tempList)
+            {
+
+                //get the species, it will be useful for the rest of the pokemon.
+                PokeSim.Models.PokemonBase species;
+                if (!pokemonBaseDict.TryGetValue(item.PokemonBaseId, out species))
+                {
+                    species = null;
+                }
+                PokeSim.Models.Nature nature;
+                if (!natureDict.TryGetValue(item.NatureId, out nature))
+                {
+                    nature = null;
+                }
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @if (species == null)
+                        {
+                            <span style="color:red">UNKNOWN(@item.PokemonBaseId)</span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Details", "PokemonBase", new { id = species.Id })">@species.Name</a>
+                        }
+                    </td>
+                    <td>
+                        @{
+                            warningString = "";
+                            if (!genderDict.TryGetValue(item.GenderEnumId, out displayString))
+                            {
+                                displayString = "UNKNOWN GENDER (" + item.GenderEnumId + ")";
+                                warningString = "style=\"color:red\"";
+                            }
+                        }
+                        <span @warningString>@displayString</span>
+                    </td>
+                    <td>
+                        @{
+                            warningString = "";
+                            displayString = "";
+                            if (species == null)
+                            {
+                                <span style="color:red">UNKNOWN(@item.AbilityEnumId)</span>
+                            }
+                            else
+                            {
+                                //get the ability ID from the species, based on whether it's the First, Second, or Hidden Enum.
+                                int abilityId;
+                                string abilityEnumName;
+                                switch (item.AbilityEnumId)
+                                {
+                                    case (int)AbilitiesEnum.First:
+                                        abilityEnumName = "F";
+                                        abilityId = species.AbilityID_First;
+                                        break;
+                                    case (int)AbilitiesEnum.Second:
+                                        abilityEnumName = "S";
+                                        abilityId = species.AbilityID_Second;
+                                        break;
+                                    case (int)AbilitiesEnum.Hidden:
+                                        abilityEnumName = "H";
+                                        abilityId = species.AbilityID_Hidden;
+                                        break;
+                                    default:
+                                        abilityEnumName = "UNKNOWN(" + item.AbilityEnumId + ")";
+                                        abilityId = int.MinValue;
+                                        break;
+                                }
+
+                                if (abilityId == int.MinValue)
+                                {
+                                    <span style="color:red">UNKNOWN ENUM(@item.AbilityEnumId)</span>
+                                }
+                                else
+                                {
+                                    //it's a valid Ability Enum ID, good.
+                                    //it should either be the actual ability or the first ability.
+                                    string abilityString;
+                                    if (abilityDict.TryGetValue(abilityId, out abilityString))
+                                    {
+                                        //the current ability is good.
+                                        <a href="@Url.Action("Details", "Ability", new { id = abilityId })">(@abilityEnumName)@abilityString</a>
+                                    }
+                                    else if (item.AbilityEnumId != (int)AbilitiesEnum.First && abilityDict.TryGetValue(species.AbilityID_First, out abilityString))
+                                    {
+                                        //the current one wasn't valid, but the first is.
+                                        <a href="@Url.Action("Details", "Ability", new { id = species.AbilityID_First })">(@abilityEnumName)@abilityString</a>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:red">(@abilityEnumName)UNKNOWN ABILITY ID(@abilityId)</span>
+                                    }
+                                }
+                            }
+                        }
+                            
+                    </td>
+        
+                    <td>
+                        @{
+                            PokeSim.Models.Nature tempNature;
+                            if (natureDict.TryGetValue(item.NatureId, out tempNature))
+                            {
+                                <a href="@Url.Action("Details", "Nature", new {id=tempNature.Id})">@tempNature.Name</a>
+                            }
+                            else
+                            {
+                                <span style="color:red">UNKNOWN(@item.NatureId)</span>
+                            }
+                        }
+                    </td>
+        
+                    <td>
+                        @item.Level
+                    </td>
+        
+                    <td>
+                        @item.XP
+                    </td>
+        
+                    <td>
+                        @{
+                            int tempAttId = item.AttackID_1;
+                            if (tempAttId <= 0)
+                            {
+                                <span>-</span>
+                            }
+                            else
+                            {
+                                if (attackDict.TryGetValue(tempAttId, out displayString))
+                                {
+                                    <a href="@Url.Action("Details", "Attack", new {id=tempAttId})">@displayString</a>
+                                }
+                                else
+                                {
+                                    <span style="color:red">UNKNOWN(@tempAttId)</span>
+                                }
+                            }
+                        }
+                    </td>
+                    <td>
+                        @{
+                            tempAttId = item.AttackID_2;
+                            if (tempAttId <= 0)
+                            {
+                                <span>-</span>
+                            }
+                            else
+                            {
+                                if (attackDict.TryGetValue(tempAttId, out displayString))
+                                {
+                                    <a href="@Url.Action("Details", "Attack", new {id=tempAttId})">@displayString</a>
+                                }
+                                else
+                                {
+                                    <span style="color:red">UNKNOWN(@tempAttId)</span>
+                                }
+                            }
+                        }
+                    </td>
+                    <td>
+                        @{
+                            tempAttId = item.AttackID_3;
+                            if (tempAttId <= 0)
+                            {
+                                <span>-</span>
+                            }
+                            else
+                            {
+                                if (attackDict.TryGetValue(tempAttId, out displayString))
+                                {
+                                    <a href="@Url.Action("Details", "Attack", new {id=tempAttId})">@displayString</a>
+                                }
+                                else
+                                {
+                                    <span style="color:red">UNKNOWN(@tempAttId)</span>
+                                }
+                            }
+                        }
+                    </td>
+                    <td>
+                        @{
+                            tempAttId = item.AttackID_4;
+                            if (tempAttId <= 0)
+                            {
+                                <span>-</span>
+                            }
+                            else
+                            {
+                                if (attackDict.TryGetValue(tempAttId, out displayString))
+                                {
+                                    <a href="@Url.Action("Details", "Attack", new {id=tempAttId})">@displayString</a>
+                                }
+                                else
+                                {
+                                    <span style="color:red">UNKNOWN(@tempAttId)</span>
+                                }
+                            }
+                        }
+                    </td>
+                    <td>
+                        @item.getStat(Stat.HP, species, nature)
+                    </td>
+                    <td>
+                        @item.getStat(Stat.Attack, species, nature)
+                    </td>
+                    <td>
+                        @item.getStat(Stat.Defense, species, nature)
+                    </td>
+                    <td>
+                        @item.getStat(Stat.SpecialAttack, species, nature)
+                    </td>
+                    <td>
+                        @item.getStat(Stat.SpecialDefense, species, nature)
+                    </td>
+                    <td>
+                        @item.getStat(Stat.Speed, species, nature)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }) 
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index")
+</p>

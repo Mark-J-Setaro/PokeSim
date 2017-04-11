@@ -1,0 +1,101 @@
+﻿@model PokeSim.Models.FormChange
+
+@{
+    string displayItem = "Form Change";
+    ViewBag.Title = "Edit " + displayItem;
+
+    PokeSim.Models.FormChange currentItem = ViewBag.CurrentItem;
+    PokeSim.Models.PokemonBase pkmnBasePrev = ViewBag.PkmnBasePrev;
+    PokeSim.Models.PokemonBase pkmnBaseNext = ViewBag.PkmnBaseNext;
+    Dictionary<int, string> formChangeDict = EnumHelpers.intToEnumNameDict<FormChangeType>();
+    ViewBag.CurrentItem = currentItem;
+
+
+    string message = ViewBag.Message;
+
+    string displayString = "";
+    string warningString = "";
+
+    string selected = "";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p style="color:red">@message</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="no-edit-fields col-md-2">@currentItem.Id</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PokemonBaseId_Prev, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (pkmnBasePrev != null)
+                {
+                    displayString = pkmnBasePrev.Name;
+                    warningString = "";
+                }
+                else
+                {
+                    displayString = "UNKNOWN SPECIES(" + currentItem.PokemonBaseId_Prev + ")";
+                    warningString = "style=\"color: red\"";
+                }
+                <span @warningString>@displayString</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PokemonBaseId_Next, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (pkmnBaseNext != null)
+                {
+                    displayString = pkmnBaseNext.Name;
+                    warningString = "";
+                }
+                else
+                {
+                    displayString = "UNKNOWN SPECIES(" + currentItem.PokemonBaseId_Next + ")";
+                    warningString = "style=\"color: red\"";
+                }
+                <span @warningString>@displayString</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FormChangeEnum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="FormChangeEnum" name="FormChangeEnum">
+                    @{
+                        foreach (KeyValuePair<int, string> i in formChangeDict)
+                        {
+                            if (currentItem.FormChangeEnum == i.Key)
+                            {
+                                selected = " selected='selected'";
+                            }
+                            else { selected = ""; }
+                            <option value="@i.Key" @selected>@i.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<p>
+    @Html.ActionLink(displayItem + " Index", "Index") |
+    @Html.ActionLink(displayItem + " Overview", "Overview")
+</p>
